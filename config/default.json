@@ -1,0 +1,4 @@
+{
+    "mongoURI": "mongodb+srv://kesava07:TR78xpPydA3wulZZ@mern-cluster-4fjls.mongodb.net/dev-connector?retryWrites=true&w=majority",
+    "jwtSecret":"devconnectorsecretkey"
+}
