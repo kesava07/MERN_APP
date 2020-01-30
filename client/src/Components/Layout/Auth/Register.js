@@ -1,7 +1,11 @@
 import React, { Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { setAlert } from '../../../Actions/Alert';
+import { register } from '../../../Actions/Auth'
+import PropTypes from 'prop-types';
 
-const Register = () => {
+const Register = ({ setAlert, register, isAuthenticated }) => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -17,11 +21,14 @@ const Register = () => {
     const onSubmit = async e => {
         e.preventDefault();
         if (password !== password2) {
-            alert('Passwords do not match', 'danger');
+            setAlert('Passwords do not match', 'danger', 3000);
         } else {
-            console.log(name, email, password);
+            register({ name, email, password });
         }
     };
+    if (isAuthenticated) {
+        return <Redirect to="/dashboard" />
+    }
 
     return (
         <Fragment>
@@ -37,7 +44,7 @@ const Register = () => {
                         name='name'
                         value={name}
                         onChange={e => onChange(e)}
-                        required
+
                     />
                 </div>
                 <div className='form-group'>
@@ -47,7 +54,7 @@ const Register = () => {
                         name='email'
                         value={email}
                         onChange={e => onChange(e)}
-                        required
+
                     />
                     <small className='form-text'>
                         This site uses Gravatar so if you want a profile image, use a
@@ -62,7 +69,7 @@ const Register = () => {
                         value={password}
                         onChange={e => onChange(e)}
                         autoComplete=""
-                        required
+
                     />
                 </div>
                 <div className='form-group'>
@@ -83,5 +90,14 @@ const Register = () => {
         </Fragment>
     );
 };
+Register.prototype = {
+    setAlert: PropTypes.func.isRequired,
+    register: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool
+}
 
-export default Register
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, { setAlert, register })(Register);
